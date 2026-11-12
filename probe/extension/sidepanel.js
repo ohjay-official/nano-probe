@@ -64,7 +64,24 @@ document.getElementById('go').addEventListener('click', async () => {
     out.inferenceSource = source || null;
     log('model reply: ' + text);
     log('inferenceSource: ' + String(source));
-    out.result = 'firebase-ai-logic-ok';
+
+    // Cloud path: the real App Check test. On-device calls never hit the
+    // backend, so only an in-cloud call proves the debug token is accepted
+    // while App Check is enforced for Firebase AI Logic.
+    try {
+      const cloud = getGenerativeModel(ai, { mode: InferenceMode.ONLY_IN_CLOUD });
+      const cr = await cloud.generateContent('Reply with the single word ok. No other text.');
+      out.cloudAnswer = cr.response.text();
+      out.cloudSource = cr.response.inferenceSource || null;
+      log('cloud reply: ' + out.cloudAnswer);
+      log('cloud inferenceSource: ' + String(out.cloudSource));
+      out.cloud = 'cloud-app-check-ok';
+    } catch (e) {
+      out.cloud = 'cloud-error';
+      out.cloudError = String(e && (e.stack || e.message || e));
+      log('CLOUD ERROR: ' + out.cloudError);
+    }
+    out.result = out.cloud === 'cloud-app-check-ok' ? 'firebase-ai-logic-ok' : 'on-device-ok-cloud-failed';
   } catch (err) {
     out.result = 'error';
     out.error = String(err && (err.stack || err.message || err));
