@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Day-one probe: Gemini Nano in Chrome</title>
+<style>
+  body { font: 16px/1.5 system-ui, sans-serif; margin: 32px; max-width: 900px; color: #111; }
+  h1 { font-size: 22px; margin: 0 0 8px; }
+  button { font: inherit; padding: 8px 14px; border: 1px solid #111; background: #fff; cursor: pointer; }
+  pre { background: #f4f4f2; padding: 12px; white-space: pre-wrap; border: 1px solid #ddd; }
+  .ok { color: #0a6b2f; } .bad { color: #a11; }
+</style>
+</head>
+<body>
+<h1>Day-one probe: is Gemini Nano running in this Chrome?</h1>
+<p id="ua"></p>
+<button id="go">Run on-device test</button>
+<pre id="log">waiting for click</pre>
+<script>
+  const out = { steps: [], ua: navigator.userAgent };
+  const logEl = document.getElementById('log');
+  document.getElementById('ua').textContent = navigator.userAgent;
+  function log(msg) {
+    const line = new Date().toISOString().slice(11, 19) + '  ' + msg;
+    out.steps.push(line);
+    logEl.textContent = out.steps.join('\n');
+  }
+  window.__probe = out;
+  document.getElementById('go').addEventListener('click', async () => {
+    try {
+      if (!('LanguageModel' in self)) { out.result = 'no-LanguageModel-global'; log('LanguageModel is not defined in this browser'); return; }
+      const before = await LanguageModel.availability();
+      out.availabilityBefore = before;
+      log('availability(): ' + before);
+      if (before === 'unavailable') { out.result = 'unavailable'; return; }
+      const t0 = performance.now();
+      const session = await LanguageModel.create({
+        monitor(m) {
+          m.addEventListener('downloadprogress', (e) => {
+            out.lastProgress = e.loaded;
+            log('download progress: ' + Math.round(e.loaded * 100) + '%');
+          });
+        },
+      });
+      out.createMs = Math.round(performance.now() - t0);
+      log('session ready after ' + out.createMs + ' ms');
+      out.availabilityAfter = await LanguageModel.availability();
+      const prompt = 'In one short sentence, explain why running AI on the device can protect user privacy.';
+      const t1 = performance.now();
+      const answer = await session.prompt(prompt);
+      out.promptMs = Math.round(performance.now() - t1);
+      out.answer = answer;
+      log('prompt took ' + out.promptMs + ' ms');
+      log('Gemini Nano answered: ' + answer);
+      out.result = 'on-device-ok';
+    } catch (err) {
+      out.result = 'error';
+      out.error = String(err && (err.stack || err.message || err));
+      log('ERROR: ' + out.error);
+    } finally {
+      out.done = true;
+      logEl.className = out.result === 'on-device-ok' ? 'ok' : 'bad';
+    }
+  });
+</script>
+</body>
+</html>

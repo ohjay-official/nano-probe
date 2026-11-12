@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Did I Order This probe</title>
+  <style>
+    body { font: 16px/1.5 system-ui, sans-serif; margin: 24px; color: #111; background: #fff; }
+    h1 { font-size: 20px; margin: 0 0 8px; font-weight: 600; }
+    button { font: inherit; padding: 8px 14px; border: 1px solid #111; background: #fff; cursor: pointer; }
+    pre { background: #f4f4f2; padding: 12px; white-space: pre-wrap; border: 1px solid #ddd; }
+    .ok { color: #0a6b2f; }
+    .bad { color: #a11; }
+  </style>
+</head>
+<body>
+  <h1>Firebase AI Logic in this extension page</h1>
+  <p>This is a throwaway probe. It calls Firebase AI Logic hybrid and shows <code>inferenceSource</code>.</p>
+  <button id="go">Run hybrid test</button>
+  <pre id="log">waiting for click</pre>
+  <script type="module" src="dist/sidepanel.js"></script>
+</body>
+</html>

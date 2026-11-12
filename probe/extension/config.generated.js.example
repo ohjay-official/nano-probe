@@ -1,0 +1,12 @@
+// Example only. The real file is written by write-extension-config.mjs in CI.
+export default {
+  firebase: {
+    apiKey: "REPLACE",
+    authDomain: "REPLACE.firebaseapp.com",
+    projectId: "REPLACE",
+    storageBucket: "REPLACE.appspot.com",
+    messagingSenderId: "REPLACE",
+    appId: "REPLACE"
+  },
+  debugToken: "REPLACE"
+};

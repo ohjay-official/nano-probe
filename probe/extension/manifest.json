@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Did I Order This probe",
+  "version": "0.0.1",
+  "description": "Throwaway probe: Firebase AI Logic hybrid in a side panel, with App Check debug token.",
+  "permissions": ["sidePanel"],
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Open probe side panel"
+  }
+}

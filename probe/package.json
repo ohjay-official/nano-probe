@@ -1,0 +1,21 @@
+{
+  "name": "did-i-order-this-probe",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Throwaway probes: Gemini Nano in branded Chrome, and Firebase AI Logic plus App Check in an MV3 side panel",
+  "scripts": {
+    "probe": "bash run-ci.sh",
+    "probe:extension": "bash run-extension-ci.sh",
+    "bundle:extension": "esbuild extension/sidepanel.js --bundle --format=esm --outfile=extension/dist/sidepanel.js --legal-comments=none"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "firebase": "13.2.0",
+    "playwright-core": "1.65.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.11"
+  }
+}
